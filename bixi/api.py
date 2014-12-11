@@ -30,7 +30,7 @@ class CityResource(BixiResource):
 
 class StationResource(BixiResource):
     city = fields.ForeignKey(CityResource, 'city')
-    
+
     def dehydrate(self, bundle):
         update = Update.objects.filter(station__id=bundle.data['id']).latest()
         bundle.data['nb_bikes'] = update.nb_bikes
@@ -66,8 +66,8 @@ class StationResource(BixiResource):
         self.method_check(request, allowed=['get'])
         self.throttle_check(request)
 
-        lat = float(request.GET['lat'])
-        long = float(request.GET['long'])
+        latitude = float(request.GET['latitude'])
+        longitude = float(request.GET['longitude'])
         city_code = request.GET.get('city', None)
         num_stations = int(request.GET.get('num', 1))
 
@@ -75,7 +75,7 @@ class StationResource(BixiResource):
         if city_code:
             city = City.available.get(code=city_code)
 
-        stations = Station.closest_stations(lat, long, city, num_stations)
+        stations = Station.closest_stations(latitude, longitude, city, num_stations)
         objects = []
 
         for (distance, station) in stations:

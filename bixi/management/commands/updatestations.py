@@ -63,8 +63,8 @@ class Command(BaseCommand):
                     station.terminal_name = terminal_name
                     created = created + 1
                     self.progress('c')
-                lat = float(s.find('lat').text)
-                long = float(s.find('long').text)
+                latitude = float(s.find('lat').text)
+                longitude = float(s.find('long').text)
                 installed = s.find('installed').text == 'true'
                 locked = s.find('locked').text == 'true'
                 install_date = Command.timestampToDateTime(
@@ -84,8 +84,8 @@ class Command(BaseCommand):
                 else:
                     latest_update_time = datetime.now()
                 station.last_comm_with_server = last_comm_with_server
-                station.lat = lat
-                station.long = long
+                station.latitude = latitude
+                station.longitude = longitude
                 station.installed = installed
                 station.locked = locked
                 station.install_date = install_date

@@ -14,7 +14,7 @@ class StationAdmin(admin.ModelAdmin):
         'locked', 'temporary', 'public')
     list_filter = ('city', 'installed', 'locked', 'temporary', 'public')
     readonly_fields = ('city', 'public_id', 'name', 'terminal_name',
-        'last_comm_with_server', 'lat', 'long', 'installed', 'locked',
+        'last_comm_with_server', 'latitude', 'longitude', 'installed', 'locked',
         'install_date', 'removal_date', 'temporary', 'public',)
     search_fields = ('name',)
 
