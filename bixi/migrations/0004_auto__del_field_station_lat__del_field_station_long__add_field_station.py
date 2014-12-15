@@ -8,39 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Station.lat'
-        db.delete_column(u'bixi_station', 'lat')
+        # Renaming field 'Station.lat'
+        db.rename_column(u'bixi_station', 'lat', 'latitude')
 
-        # Deleting field 'Station.long'
-        db.delete_column(u'bixi_station', 'long')
-
-        # Adding field 'Station.latitude'
-        db.add_column(u'bixi_station', 'latitude',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
-                      keep_default=False)
-
-        # Adding field 'Station.longitude'
-        db.add_column(u'bixi_station', 'longitude',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
-                      keep_default=False)
+        # Renaming field 'Station.long'
+        db.rename_column(u'bixi_station', 'long', 'longitude')
 
 
     def backwards(self, orm):
-        # Adding field 'Station.lat'
-        db.add_column(u'bixi_station', 'lat',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
-                      keep_default=False)
+        # Renaming field 'Station.latitude'
+        db.rename_column(u'bixi_station', 'latitude', 'lat')
 
-        # Adding field 'Station.long'
-        db.add_column(u'bixi_station', 'long',
-                      self.gf('django.db.models.fields.FloatField')(default=0),
-                      keep_default=False)
-
-        # Deleting field 'Station.latitude'
-        db.delete_column(u'bixi_station', 'latitude')
-
-        # Deleting field 'Station.longitude'
-        db.delete_column(u'bixi_station', 'longitude')
+        # Renaming field 'Station.longitude'
+        db.rename_column(u'bixi_station', 'longitude', 'long')
 
 
     models = {
