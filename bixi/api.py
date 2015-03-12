@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.throttle import CacheThrottle
@@ -10,8 +10,9 @@ from models import City, Station, Update
 
 
 class BixiResource(ModelResource):
-  def determine_format(self, request):
-    return 'application/json'
+    def determine_format(self, request):
+        return 'application/json'
+
 
 class CityResource(BixiResource):
     class Meta:
@@ -27,6 +28,7 @@ class CityResource(BixiResource):
             timeframe=settings.BIXI_TIMEFRAME,
             expiration=settings.BIXI_EXPIRATION
         )
+
 
 class StationResource(BixiResource):
     city = fields.ForeignKey(CityResource, 'city')
@@ -58,8 +60,8 @@ class StationResource(BixiResource):
                 self._meta.resource_name,
                 trailing_slash()
             ),
-            self.wrap_view('get_closest_stations'),
-            name='api_get_closest_stations'),
+                self.wrap_view('get_closest_stations'),
+                name='api_get_closest_stations'),
         ]
 
     def get_closest_stations(self, request, **kwargs):
@@ -75,13 +77,15 @@ class StationResource(BixiResource):
         if city_code:
             city = City.available.get(code=city_code)
 
-        stations = Station.closest_stations(latitude, longitude, city, num_stations)
+        stations = Station.closest_stations(
+            latitude, longitude, city, num_stations)
         objects = []
 
         for (distance, station) in stations:
             bundle = self.build_bundle(obj=station, request=request)
             bundle = self.full_dehydrate(bundle)
-            objects.append({ 'distance': distance, 'station': bundle })
+            objects.append(
+                {'distance': distance, 'station': bundle})
 
         object_list = {
             'objects': objects,
@@ -89,4 +93,3 @@ class StationResource(BixiResource):
 
         self.log_throttled_access(request)
         return self.create_response(request, object_list)
-

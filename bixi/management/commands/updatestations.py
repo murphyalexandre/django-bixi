@@ -44,8 +44,8 @@ class Command(BaseCommand):
                 else:
                     last_comm_with_server = None
                 try:
-                    station = Station.objects.get(city=city,
-                        public_id=public_id)
+                    station = Station.objects.get(
+                        city=city, public_id=public_id)
                     if station.last_comm_with_server == last_comm_with_server:
                         statusquo = statusquo + 1
                         self.progress('.')
@@ -114,4 +114,3 @@ class Command(BaseCommand):
 
     def progress(self, str):
         self.stdout.write(str, ending='')
-

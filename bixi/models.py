@@ -4,9 +4,10 @@ from utils import distance
 
 
 class AvailableCityManager(models.Manager):
-    def get_query_set(self):
-        return super(AvailableCityManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(AvailableCityManager, self).get_queryset().filter(
             active=True)
+
 
 class City(models.Model):
     code = models.SlugField(max_length=20)
@@ -25,10 +26,12 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class AvailableStationManager(models.Manager):
-    def get_query_set(self):
-        return super(AvailableStationManager, self).get_query_set().filter(
+    def get_queryset(self):
+        return super(AvailableStationManager, self).get_queryset().filter(
             installed=True, locked=False)
+
 
 class Station(models.Model):
     city = models.ForeignKey(City)
@@ -38,11 +41,11 @@ class Station(models.Model):
     last_comm_with_server = models.DateTimeField(null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    installed = models.BooleanField()
-    locked = models.BooleanField()
+    installed = models.BooleanField(default=False)
+    locked = models.BooleanField(default=False)
     install_date = models.DateTimeField(null=True)
     removal_date = models.DateTimeField(null=True)
-    temporary = models.BooleanField()
+    temporary = models.BooleanField(default=False)
     public = models.NullBooleanField()
 
     objects = models.Manager()
@@ -60,8 +63,8 @@ class Station(models.Model):
         tuples containing the distance of the neighbor stations sorted by
         proximity.
         """
-        return Station.closest_stations(self.latitude, self.longitude, self.city,
-            num_stations)
+        return Station.closest_stations(
+            self.latitude, self.longitude, self.city, num_stations)
 
     @staticmethod
     def closest_stations(latitude, longitude, city=None, num_stations=None):
@@ -71,17 +74,20 @@ class Station(models.Model):
         and station sorted by proximity.
         """
         stations = dict()
-        stations_qs = Station.objects.exclude(latitude=latitude, longitude=longitude)
+        stations_qs = Station.objects.exclude(
+            latitude=latitude, longitude=longitude)
         if (city):
             stations_qs = stations_qs.filter(city=city)
         for s in stations_qs:
-            stations[distance(latitude, longitude, s.latitude, s.longitude)] = s
+            stations[distance(
+                latitude, longitude, s.latitude, s.longitude)] = s
         sorted_stations = []
         for (i, s) in enumerate(sorted(stations.keys())):
             if num_stations and i == num_stations:
                 break
             sorted_stations.append((s, stations[s],))
         return sorted_stations
+
 
 class Update(models.Model):
     station = models.ForeignKey(Station)
@@ -94,4 +100,3 @@ class Update(models.Model):
 
     def __unicode__(self):
         return self.station.name
-
